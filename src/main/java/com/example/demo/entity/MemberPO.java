@@ -6,7 +6,7 @@ import lombok.Data;
 import java.time.LocalDate;
 @Data
 @Entity
-public class Member {
+public class MemberPO {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,4 +33,6 @@ public class Member {
 
     @Column(nullable = false)
     private String status;
+
+
 }

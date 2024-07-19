@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.Member;
+import com.example.demo.entity.MemberPO;
 import com.example.demo.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,23 +14,23 @@ public class MemberService {
     @Autowired
     private MemberRepository memberRepository;
 
-    public Member addMember(Member member) {
-        return memberRepository.save(member);
+    public MemberPO addMember(MemberPO memberPO) {
+        return memberRepository.save(memberPO);
     }
 
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
     }
 
-    public Member updateMember(Member member) {
-        return memberRepository.save(member);
+    public MemberPO updateMember(MemberPO memberPO) {
+        return memberRepository.save(memberPO);
     }
 
-    public Optional<Member> getMember(Long id) {
+    public Optional<MemberPO> getMember(Long id) {
         return memberRepository.findById(id);
     }
 
-    public List<Member> getAllMembers() {
+    public List<MemberPO> getAllMembers() {
         return memberRepository.findAll();
     }
 }
