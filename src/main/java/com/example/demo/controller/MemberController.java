@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.DTO.MemberDTO;
 import com.example.demo.common.Const;
+import com.example.demo.common.Method;
 import com.example.demo.entity.MemberPO;
 import com.example.demo.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,13 +39,22 @@ public class MemberController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMember(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteMember(@PathVariable @Valid Long id) {
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping
-    public ResponseEntity<MemberPO> updateMember(@RequestBody MemberPO memberPO) {
+    public ResponseEntity<MemberPO> updateMember(@RequestBody @Valid MemberDTO.updaeteMember input) {
+        MemberPO memberPO = new MemberPO();
+        memberPO.setId(input.getId());
+        memberPO.setName(input.getName());
+        memberPO.setGender(input.getGender());
+        memberPO.setEmail(input.getEmail());
+        memberPO.setStatus(input.getStatus());
+        memberPO.setBirthDate(input.getBirthDate());
+        memberPO.setJoinDate(input.getJoinDate());
+        memberPO.setPhoneNumber(input.getPhoneNumber());
         MemberPO updatedMemberPO = memberService.updateMember(memberPO);
         return ResponseEntity.ok(updatedMemberPO);
     }

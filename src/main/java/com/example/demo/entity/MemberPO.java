@@ -6,11 +6,12 @@ import lombok.Data;
 import java.time.LocalDate;
 @Data
 @Entity
+@Table(name = "Member")
 public class MemberPO {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long employeeNumber;
+    private Long id;
 
 
     @Column(nullable = false)
