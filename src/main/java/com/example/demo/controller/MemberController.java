@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -23,6 +24,8 @@ public class MemberController {
 
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping
     @Operation(summary = "addMember")
@@ -35,6 +38,8 @@ public class MemberController {
         newMemberPO.setBirthDate(member.getBirthDate());
         newMemberPO.setPhoneNumber(member.getPhoneNumber());
         newMemberPO.setJoinDate(LocalDate.now());
+        newMemberPO.setPassword(passwordEncoder.encode(member.getPassword()));
+        memberService.addMember(newMemberPO);
         return ResponseEntity.ok(newMemberPO);
     }
 

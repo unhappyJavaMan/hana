@@ -41,7 +41,7 @@ public class MemberControllerTest {
         testMember.setId(1L);
         testMember.setName("Test User");
         testMember.setEmail("test@example.com");
-        testMember.setGender("Male");
+        testMember.setGender("Man");
         testMember.setStatus(Const.STRING_MEMBER_STATUS_ACTIVE);
         testMember.setBirthDate(LocalDate.of(1990, 1, 1));
         testMember.setPhoneNumber("0912345678");

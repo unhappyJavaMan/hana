@@ -23,6 +23,8 @@ public class MemberDTO {
     public static class addMember {
         @NotNull(message = "name not null")
         private String name;
+        @NotNull(message = "password not null")
+        private String password;
         @ValidGender(message = "gender only Man or Woman")
         @NotNull(message = "gender not null")
         private String gender;

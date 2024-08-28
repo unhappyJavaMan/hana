@@ -30,6 +30,10 @@ public class MemberService {
         return memberRepository.findById(id);
     }
 
+    public Optional<MemberPO> findByEmail(String email) {
+        return memberRepository.findByEmail(email);
+    }
+
     public List<MemberPO> getAllMembers() {
         return memberRepository.findAll();
     }
