@@ -1,6 +1,7 @@
 package com.hana.service.Common;
 
 import com.hana.service.Utils.LogUtils;
+import com.hana.service.Utils.Methods;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -49,6 +50,8 @@ public class ResponseCorsFilter implements Filter {
 		response.setHeader("Access-Control-Allow-Credentials", "true");
 		response.setHeader("Access-Control-Max-Age", "3600");
 		response.setHeader("Access-Control-Expose-Headers", "Set-Cookie");
+		String requestId = Methods.getTransactionInvoiceString();
+		request.setAttribute(Const.REQUEST_ID, requestId);
 
 		if ("OPTIONS".equalsIgnoreCase(((HttpServletRequest) req).getMethod())) {
 			response.setStatus(HttpServletResponse.SC_OK);

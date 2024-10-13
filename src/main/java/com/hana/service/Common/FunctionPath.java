@@ -20,4 +20,13 @@ public class FunctionPath {
         public static final String update  = "/api/systemRole/update";
         public static final String delete  = "/api/systemRole/delete";
     }
+    public static class customer {
+        public static final String create = "/api/customer/create";
+        public static final String getAll  = "/api/customer/getAll";
+        public static final String getById  = "/api/customer/getById";
+    }
+    public static class appointment {
+        public static final String create = "/api/appointment/create";
+        public static final String getByCustomerId  = "/api/appointment/getByCustomerId";
+    }
 }

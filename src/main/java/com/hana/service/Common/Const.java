@@ -6,6 +6,7 @@ public class Const {
 
 	public static final String REQUEST_ID = "requestId";
 	public static final String USER_STATUS_ACTIVE = "Active";
+	public static final String APPOINTMENT_STATUS_SCHEDULED = "Scheduled";
 	public static final String LOG_TYPE_OPERATION = "Operation";
 	public static final String LOG_TYPE_SYSTEM = "System";
 

@@ -17,7 +17,7 @@ import java.util.Map;
 public class GlobalExceptionHandler {
     LogUtils logger = new LogUtils();
 
-    @ExceptionHandler
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<BaseResponse> handleValidationExceptions(MethodArgumentNotValidException ex, HttpServletRequest request) {
         logger.error(ex);
         Map<String, String> errors = new HashMap<>();

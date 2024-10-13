@@ -52,9 +52,6 @@ public class ControllerLoggingAspect {
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
 
-        String requestId = Methods.getTransactionInvoiceString();
-        request.setAttribute(Const.REQUEST_ID, requestId);
-
         // Log request
         // Get controller name and method
         String controllerName = joinPoint.getTarget().getClass().getSimpleName();
@@ -65,6 +62,7 @@ public class ControllerLoggingAspect {
         long start = System.currentTimeMillis();
         Object result = joinPoint.proceed();
         long executionTime = System.currentTimeMillis() - start;
+        String requestId = request.getAttribute(Const.REQUEST_ID).toString();
 
         // Log response
         if (result instanceof ResponseEntity) {
