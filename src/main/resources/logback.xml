@@ -1,0 +1,41 @@
+<configuration>
+    <!--    log file path-->
+    <property name="LOG_PATH" value="/opt/tomcat/logs" />
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <encoder>
+            <!-- log format -->
+            <!-- %d{YYYY-MM-dd HH: mm:ss.SSS} /log time -->
+            <!-- %thread /thread name -->
+            <!-- %highlight /highlight color -->
+            <!-- %-5level /log level show 5 character and to left -->
+            <!-- %logger /log name -->
+            <!-- %msg /log contain -->
+            <pattern>%d{YYYY-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <!--print to file-->
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- file path, divided by day-->
+            <fileNamePattern>${LOG_PATH}/IGA.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!--history file count-->
+            <maxHistory>15</maxHistory>
+        </rollingPolicy>
+        <!--set log level-->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <encoder>
+            <!--Log format-->
+            <pattern>%d{HH:mm:ss.SSS} %contextName [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender> 
+    <root level="DEBUG">
+        <!---->
+        <appender-ref ref="console" />
+        <appender-ref ref="file" />
+    </root>
+</configuration>
