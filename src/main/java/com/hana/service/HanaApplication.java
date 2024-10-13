@@ -8,16 +8,16 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 
 //@PropertySource("${system.properties.path}")
 @SpringBootApplication
-public class GOV_IGAApplication extends SpringBootServletInitializer {
+public class HanaApplication extends SpringBootServletInitializer {
 
 	@Override
 	protected SpringApplicationBuilder configure(
 			SpringApplicationBuilder application) {
-		return application.sources(GOV_IGAApplication.class);
+		return application.sources(HanaApplication.class);
 	}
 
 	public static void main(String[] args) {
 		LogUtils.enableSqlLogging();
-		SpringApplication.run(GOV_IGAApplication.class, args);
+		SpringApplication.run(HanaApplication.class, args);
 	}
 }
