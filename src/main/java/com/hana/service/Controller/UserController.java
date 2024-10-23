@@ -35,7 +35,7 @@ import java.util.Optional;
 
 @RestController
 @Tag(name = "User")
-@SecurityRequirement(name = "bearerAuth")
+//@SecurityRequirement(name = "bearerAuth")
 public class UserController {
     private static LogUtils logger = new LogUtils();
     @Autowired
