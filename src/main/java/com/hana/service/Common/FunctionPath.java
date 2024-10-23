@@ -12,6 +12,7 @@ public class FunctionPath {
         public static final String getAll = "/api/members/getAll";
         public static final String getUserById = "/api/members/getUserById";
         public static final String changePassword = "/api/members/changePassword";
+        public static final String getUserInfo = "/api/members/getUserInfo";
     }
     public static class systemRole {
         public static final String create = "/api/systemRole/create";

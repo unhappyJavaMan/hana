@@ -9,6 +9,7 @@ import com.hana.service.Response.BaseResponse;
 import com.hana.service.Response.ErrorResponse;
 import com.hana.service.Response.UserResponse;
 import com.hana.service.Utils.LogUtils;
+import com.hana.service.Utils.Methods;
 import com.hana.service.Utils.TimeUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -23,6 +24,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,7 +37,7 @@ import java.util.Optional;
 
 @RestController
 @Tag(name = "User")
-//@SecurityRequirement(name = "bearerAuth")
+@SecurityRequirement(name = "bearerAuth")
 public class UserController {
     private static LogUtils logger = new LogUtils();
     @Autowired
@@ -151,7 +153,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = UserResponse.GetAll.class))),
             @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    public ResponseEntity<?> getAll(HttpServletRequest request) {
+    public ResponseEntity<? extends BaseResponse> getAll(HttpServletRequest request) {
         // 获取用户分页数据
         List<UserResponse.UserDTO> userDTOs = new ArrayList<>();
         List<UserEntity> userList = userRepository.findAll();
@@ -191,6 +193,28 @@ public class UserController {
         userRepository.save(user);
 
         return ResponseEntity.ok(new BaseResponse(request));
+    }
+
+    // 取得使用者資訊
+    @PostMapping(FunctionPath.user.getUserInfo)
+    @Operation(summary = "Change user password")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = BaseResponse.class))),
+            @ApiResponse(responseCode = "400", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @Transactional
+    public ResponseEntity<? extends BaseResponse> getUserInfo(HttpServletRequest request) {
+        String userAccount = Methods.getUserAccountBySecurityContextHolder(SecurityContextHolder.getContext().getAuthentication());
+        Optional<UserEntity> accountOpt = userRepository.findByAccount(userAccount);
+        if (!accountOpt.isPresent()){
+            ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(request, "User not found"));
+        }
+
+        UserResponse.GetUserInfo response = new UserResponse.GetUserInfo(request);
+        response.setUser(UserResponse.UserDTO.fromEntity(accountOpt.get()));
+
+        return ResponseEntity.ok(response);
     }
 
 }

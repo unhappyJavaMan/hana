@@ -39,6 +39,7 @@ public class LoginTokenAuthenticationFilter extends OncePerRequestFilter {
 
         String authorHeader = request.getHeader(AUTHORIZATION);
         String bearer = "Bearer ";
+        System.out.println(authorHeader);
 
         if (authorHeader != null && authorHeader.startsWith(bearer)) {
             String token = authorHeader.substring(bearer.length());

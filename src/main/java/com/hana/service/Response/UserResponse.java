@@ -31,6 +31,16 @@ public class UserResponse extends BaseResponse {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
+    public static class GetUserInfo extends BaseResponse {
+        private UserDTO user;
+
+        public GetUserInfo(HttpServletRequest request) {
+            super(request);
+        }
+    }
+
+    @Data
     public static class UserDTO {
         private Long id;
         private String account;
