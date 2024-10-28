@@ -199,7 +199,7 @@ public class UserController {
     @PostMapping(FunctionPath.user.getUserInfo)
     @Operation(summary = "Change user password")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = BaseResponse.class))),
+            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = UserResponse.GetUserInfo.class))),
             @ApiResponse(responseCode = "400", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
