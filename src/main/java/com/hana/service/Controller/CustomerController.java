@@ -29,6 +29,7 @@ import org.springframework.context.annotation.Description;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -116,9 +117,9 @@ public class CustomerController {
             @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = BaseResponse.class))),
             @ApiResponse(responseCode = "400", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
+    @Transactional
     public ResponseEntity<? extends BaseResponse> createCustomerByUserId(@RequestBody @Valid CustomerRequest.Create request, HttpServletRequest httpRequest) {
         String userAccount = Methods.getUserAccountBySecurityContextHolder(SecurityContextHolder.getContext().getAuthentication());
-        long userId = userRepository.findByAccount(userAccount).get().getId();
         UserEntity user = userRepository.findByAccount(userAccount)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         String gender = request.getGender();
@@ -138,6 +139,7 @@ public class CustomerController {
         mapping.setCustomer(customer);
         mapping.setCreateDate(LocalDateTime.now());
         mapping.setUpdateDate(LocalDateTime.now());
+        mapping.setStatus(Const.USER_STATUS_ACTIVE);
 
         // 儲存mapping
         userCustomerMappingRepository.save(mapping);
