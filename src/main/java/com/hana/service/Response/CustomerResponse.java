@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,6 +17,16 @@ public class CustomerResponse {
         private List<CustomerDTO> customers;
 
         public GetAll(HttpServletRequest request) {
+            super(request);
+        }
+    }
+
+    @Data
+    @EqualsAndHashCode(callSuper = true)
+    public static class GetCustomerByUserId extends BaseResponse {
+        private List<CustomerDTO> customers;
+
+        public GetCustomerByUserId(HttpServletRequest request) {
             super(request);
         }
     }
@@ -37,6 +48,7 @@ public class CustomerResponse {
         private String email;
         private String phone;
         private String status;
+        private LocalDate birthday;
         private LocalDateTime createDate;
         private LocalDateTime updateDate;
 
@@ -47,6 +59,7 @@ public class CustomerResponse {
             dto.setEmail(entity.getEmail());
             dto.setPhone(entity.getPhone());
             dto.setStatus(entity.getStatus());
+            dto.setBirthday(entity.getBirthDate());
             dto.setCreateDate(entity.getCreateDate());
             dto.setUpdateDate(entity.getUpdateDate());
             return dto;

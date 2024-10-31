@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -33,6 +35,9 @@ public class UserEntity {
     private String loginToken;
     @Column(nullable = true)
     private LocalDateTime tokenExpiredTime;
+
+    @OneToMany(mappedBy = "user")
+    private Set<UserCustomerMappingEntity> customerMappings = new HashSet<>();
 
 
 }
