@@ -6,6 +6,7 @@ public class Const {
 
 	public static final String REQUEST_ID = "requestId";
 	public static final String USER_STATUS_ACTIVE = "Active";
+	public static final String USER_STATUS_REVOKE = "Revoke";
 	public static final String GENDER_TYPE_MALE = "Male";
 	public static final String GENDER_TYPE_FEMALE = "Female";
 

@@ -14,7 +14,6 @@ import com.hana.service.Response.CustomerResponse;
 import com.hana.service.Response.ErrorResponse;
 import com.hana.service.Service.UserCustomerService;
 import com.hana.service.Utils.Methods;
-import com.hana.service.Utils.TimeUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -25,7 +24,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Description;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,7 +34,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -52,6 +49,8 @@ public class CustomerController {
     private UserCustomerMappingRepository userCustomerMappingRepository;
     @Autowired
     private UserCustomerService userCustomerService;
+    @Autowired
+    private UserCustomerMappingRepository mappingRepository;
 
     @PostMapping(FunctionPath.customer.getAll)
     @Operation(summary = "Get all customers")
@@ -98,11 +97,12 @@ public class CustomerController {
     public ResponseEntity<?> getCustomerByUserId(HttpServletRequest httpRequest) {
         String userAccount = Methods.getUserAccountBySecurityContextHolder(SecurityContextHolder.getContext().getAuthentication());
         long userId = userRepository.findByAccount(userAccount).get().getId();
-        List<CustomerEntity> customersByUserId = userCustomerService.getCustomersByUserId(userId);
+        List<UserCustomerMappingEntity> mappingEntities = mappingRepository.findByUserId(userId);
 
         List<CustomerResponse.CustomerDTO> responseDatas = new ArrayList<>();
-        for (CustomerEntity entity : customersByUserId) {
-            responseDatas.add(CustomerResponse.CustomerDTO.fromEntity(entity));
+        for (UserCustomerMappingEntity mappingEntity : mappingEntities){
+            CustomerEntity entityCustomer = mappingEntity.getCustomer();
+            responseDatas.add(CustomerResponse.CustomerDTO.fromEntityAndMappingStatus(entityCustomer, mappingEntity));
         }
 
         CustomerResponse.GetCustomerByUserId response = new CustomerResponse.GetCustomerByUserId(httpRequest);
@@ -112,7 +112,7 @@ public class CustomerController {
 
     @PostMapping(FunctionPath.customer.createCustomerByUserId)
     @Operation(summary = "Create customer",
-        description = FunctionPath.customer.createCustomerByUserId)
+            description = FunctionPath.customer.createCustomerByUserId)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = BaseResponse.class))),
             @ApiResponse(responseCode = "400", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
@@ -122,9 +122,10 @@ public class CustomerController {
         String userAccount = Methods.getUserAccountBySecurityContextHolder(SecurityContextHolder.getContext().getAuthentication());
         UserEntity user = userRepository.findByAccount(userAccount)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
         String gender = request.getGender();
-        if (gender != null){
-            if (!Const.GENDER_TYPE_MALE.equals(gender) && !Const.GENDER_TYPE_FEMALE.equals(gender)){
+        if (gender != null && !gender.trim().isEmpty()) {
+            if (!Const.GENDER_TYPE_MALE.equals(gender) && !Const.GENDER_TYPE_FEMALE.equals(gender)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(new ErrorResponse(httpRequest, "gender type error"));
             }
@@ -145,6 +146,52 @@ public class CustomerController {
         userCustomerMappingRepository.save(mapping);
 
         return ResponseEntity.ok(new BaseResponse(httpRequest, "Customer created successfully"));
+    }
+
+    @PostMapping(FunctionPath.customer.updateCustomerStatusByUser)
+    @Operation(summary = "delete Customer By User",
+            description = FunctionPath.customer.updateCustomerStatusByUser)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = BaseResponse.class))),
+            @ApiResponse(responseCode = "400", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @Transactional
+    public ResponseEntity<? extends BaseResponse> updateCustomerStatusByUser(@RequestBody @Valid CustomerRequest.UpdateCustomerStatusByUser request, HttpServletRequest httpRequest) {
+        String userAccount = Methods.getUserAccountBySecurityContextHolder(SecurityContextHolder.getContext().getAuthentication());
+        Long customerId = request.getId();
+
+        Optional<CustomerEntity> customerEntity = customerRepository.findById(customerId);
+        if (customerEntity.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse(httpRequest, "this customerId not exist"));
+        }
+
+        // 檢查該客戶是否屬於當前用戶
+        Optional<UserEntity> userEntity = userRepository.findByAccount(userAccount);
+        if (userEntity.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse(httpRequest, "user not found"));
+        }
+        Long userId = userEntity.get().getId();
+
+        Optional<UserCustomerMappingEntity> mappingEntity = mappingRepository.findByUserIdAndCustomerId(userId, customerEntity.get().getId());
+
+        if (mappingEntity.isEmpty()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse(httpRequest, "you don't have permission to disable this customer"));
+        }
+        String entityStatus = null;
+        if (request.isStatus()){
+            entityStatus = Const.USER_STATUS_ACTIVE;
+        }else {
+            entityStatus = Const.USER_STATUS_REVOKE;
+        }
+
+        UserCustomerMappingEntity entity = mappingEntity.get();
+        entity.setStatus(entityStatus);
+        mappingRepository.save(entity);
+
+        return ResponseEntity.ok(new BaseResponse(httpRequest, "Revoke Customer " + customerEntity.get().getName() +" successfully"));
     }
 
 

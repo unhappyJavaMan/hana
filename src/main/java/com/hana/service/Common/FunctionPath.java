@@ -27,6 +27,7 @@ public class FunctionPath {
         public static final String getById  = "/api/customer/getById";
         public static final String getCustomerByUserId  = "/api/customer/getCustomerByUserId";
         public static final String createCustomerByUserId = "/api/customer/createCustomerByUserId";
+        public static final String updateCustomerStatusByUser = "/api/customer/updateCustomerStatusByUser";
     }
     public static class appointment {
         public static final String create = "/api/appointment/create";

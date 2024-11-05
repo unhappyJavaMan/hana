@@ -3,6 +3,7 @@ package com.hana.service.Request;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -34,7 +35,13 @@ public class CustomerRequest {
     }
 
     @Data
-    public static class Delete {
+    public static class UpdateCustomerStatusByUser {
+
+        @NotNull(message = "id is required")
         private Long id;
+
+        @NotNull(message = "status is required")
+        private boolean status;
+
     }
 }

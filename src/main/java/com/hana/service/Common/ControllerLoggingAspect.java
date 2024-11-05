@@ -1,6 +1,7 @@
 package com.hana.service.Common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.hana.service.DAO.Entity.OperationLogEntity;
 import com.hana.service.DAO.Entity.SystemLogEntity;
 import com.hana.service.DAO.Repository.OperationLogRepository;
@@ -36,7 +37,8 @@ public class ControllerLoggingAspect {
     private static final Logger log = LoggerFactory.getLogger(ControllerLoggingAspect.class);
 
 //    private static LogUtils logger = new LogUtils();
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper()
+        .registerModule(new JavaTimeModule());
     @Autowired
     OperationLogRepository operationLogRepository;
     @Autowired

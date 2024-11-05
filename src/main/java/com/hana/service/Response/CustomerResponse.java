@@ -1,6 +1,7 @@
 package com.hana.service.Response;
 
 import com.hana.service.DAO.Entity.CustomerEntity;
+import com.hana.service.DAO.Entity.UserCustomerMappingEntity;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -59,6 +60,19 @@ public class CustomerResponse {
             dto.setEmail(entity.getEmail());
             dto.setPhone(entity.getPhone());
             dto.setStatus(entity.getStatus());
+            dto.setBirthday(entity.getBirthDate());
+            dto.setCreateDate(entity.getCreateDate());
+            dto.setUpdateDate(entity.getUpdateDate());
+            return dto;
+        }
+
+        public static CustomerDTO fromEntityAndMappingStatus(CustomerEntity entity, UserCustomerMappingEntity mappingEntity) {
+            CustomerDTO dto = new CustomerDTO();
+            dto.setId(entity.getId());
+            dto.setName(entity.getName());
+            dto.setEmail(entity.getEmail());
+            dto.setPhone(entity.getPhone());
+            dto.setStatus(mappingEntity.getStatus());
             dto.setBirthday(entity.getBirthDate());
             dto.setCreateDate(entity.getCreateDate());
             dto.setUpdateDate(entity.getUpdateDate());
